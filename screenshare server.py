@@ -13,6 +13,7 @@ import pyautogui
 from pathos.multiprocessing import ProcessingPool as Pool
 import thread
 import win32api, win32con
+import re
 
 server_socket_mouse = socket.socket()
 def main():
@@ -28,7 +29,7 @@ def main():
     while True:
         im = ImageGrab.grab()
         im.save(r"C:\Users\Public\Pictures\img.jpg")
-        f = open(r"C:\Users\Pubonmlic\Pictures\img.jpg",'rb')
+        f = open(r"C:\Users\Public\Pictures\img.jpg",'rb')
         print 'Sending...'
         l = f.read(1024)
         while (l):
@@ -49,19 +50,22 @@ def mouse_control():
     while True:
         data = client_socket_mouse.recv(1024)
         print data
-        print "king"
+        click = " ".join(re.findall("[a-zA-Z]+", data))
+        if click == "mouse move":
+            data = re.findall('\d+',data)
+            x = int(data[0])
+            y = int(data[1])
+            win32api.SetCursorPos((x,y))
+        elif click == "mouse left up":
+            data = re.findall('\d+',data)
+            x = int(data[0])
+            y = int(data[1])
+            win32api.SetCursorPos((x,y))
+            pyautogui.click(x = x, y = y)
 
-def OnMouseEvent(event):
-    print 'MessageName:',event.MessageName
-    print 'Message:',event.Message
-    print 'Time:',event.Time
-    print 'Window:',event.Window
-    print 'WindowName:',event.WindowName
-    print 'Position:',event.Position
-    print 'Wheel:',event.Wheel
-    print 'Injected:',event.Injected
-    print '---'
-    return True
+        print click
+
+
 
 
 
