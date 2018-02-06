@@ -43,6 +43,7 @@ def main():
     server_socket.close()
 
 
+
 def mouse_control():
     server_socket_mouse.bind(('0.0.0.0', 1233))
     server_socket_mouse.listen(1)
